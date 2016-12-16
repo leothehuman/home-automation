@@ -339,7 +339,7 @@ unsigned char rgb[3] = {0, 0, 0};
 void recolor(unsigned char brightness)
 {
     rgb[0] = brightness;
-//    rgb[1] = brightness/4;
+    rgb[1] = 0;
     rgb[2] = brightness/2;
     for (int j = 0; j < 3; ++j)
     {
@@ -355,7 +355,7 @@ void handleLights(unsigned long now)
         return;
     }
     nextLightsUpdate = now + 25;
-    if (pir > now && light < 200)
+    if (pir > now && light < 125)
     {
         if (lightsBrightness < 255)
         {
