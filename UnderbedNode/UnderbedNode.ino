@@ -66,7 +66,6 @@ int soundPin = A1;
 
 const unsigned long PirDelay = 1000;
 
-
 int ledControlPin[3] = {5, 9, 6}; // Must be a PWM pin -- 3, 5, 6, 9, 10, 11
 void setup()
 {
@@ -79,6 +78,9 @@ void setup()
         pinMode(ledControlPin[j], OUTPUT);
     }
 //    dsSensor.init();
+    request(CHILD_ID_LIGHT, V_RGB);
+    request(CHILD_ID_LIGHT, V_DIMMER);
+    request(CHILD_ID_LIGHT, V_LIGHT);
 }
 
 void time(const char* what, unsigned long& now)
@@ -115,7 +117,7 @@ void handleDHTstate(unsigned long now)
                 temperature = newTemperature;
                 Serial.print(temperature, 2);
                 Serial.print("oC, ");
-                send(msgTemp.set((int)(temperature)));
+                send(msgTemp.set(temperature, 1));
             }
             float newHumidity = DHT11.getHumidity();
             if (abs(newHumidity - humidity) > 1)
@@ -123,7 +125,7 @@ void handleDHTstate(unsigned long now)
                 humidity = newHumidity;
                 Serial.print(humidity, 2);
                 Serial.println("%");
-                send(msgHum.set((int)(humidity)));
+                send(msgHum.set(humidity, 1));
             }
         }
         else
@@ -161,7 +163,7 @@ void handleLightSensor(unsigned long now)
         return;
     }
     int newLight = map(analogRead(lightPin), 0, 1023, 0, 100);
-    if (newLight != light)
+    if (abs(newLight - light) > 1)
     {
         light = newLight;
         Serial.print(F("Light: "));
@@ -232,28 +234,38 @@ void handleLights(unsigned long now)
     }
 }
 
-bool initialStateSent = false;
-bool lightStateSent = false;
+bool lightsInitializedState = false;
+bool lightsInitializedBrightness = false;
+bool lightsInitializedColor = false;
+bool lightsStateSent = true;
 
 void loop()
 {
-    if (!initialStateSent)
-    {
-        send(msgTemp.set((int)(temperature)));
-        send(msgHum.set((int)(humidity)));
-        send(msgMotion.set(tripped ? "1" : "0"));  // Send tripped value to gw 
-        send(msgSound.set(soundTripped));
-        send(msgLightLevel.set(light));
-        initialStateSent = true;
-    }
-    if (!lightStateSent)
-    {
-        send(msgRgb.set(setColor));
-        send(msgLight.set(setOn ? 1 : 0));
-        send(msgDimmer.set(setBrightness * setOn));
-        lightStateSent = true;
-    }
     unsigned long now = millis();
+    if (!(lightsInitializedState && lightsInitializedBrightness && lightsInitializedColor) && (now > 10000))
+    {
+        lightsInitializedState = true;
+        lightsInitializedBrightness = true;
+        lightsInitializedColor = true;
+        lightsStateSent = false;
+    }
+
+    if (!lightsStateSent)
+    {
+        if (lightsInitializedColor)
+        {
+            send(msgRgb.set(setColor));
+        }
+        if (lightsInitializedState)
+        {
+            send(msgLight.set(setOn ? 1 : 0));
+        }
+        if (lightsInitializedBrightness)
+        {
+            send(msgDimmer.set(setBrightness));
+        }
+        lightsStateSent = true;
+    }
 
 //    dsSensor.process(now);
 //    time("dsSensor.process", now);
@@ -283,7 +295,8 @@ void receive(const MyMessage& message)
             Serial.print(F("Turning lights "));
             Serial.println(setOn ? "on" : "off");
         }
-        lightStateSent = false;
+        lightsInitializedState = true;
+        lightsStateSent = false;
     } 
     else if (message.type == V_DIMMER)
     {
@@ -294,17 +307,17 @@ void receive(const MyMessage& message)
 
         if (requestedLevel != setBrightness || (bool)requestedLevel != setOn)
         {
-          Serial.print( "Changing level to " );
-          Serial.print( requestedLevel );
-          Serial.print( ", from " ); 
-          Serial.println( setBrightness );
-          setBrightness = requestedLevel;
-          if (setBrightness == 0)
-          {
-            setBrightness = 1;
-          }
-          setOn = (bool)requestedLevel;
-          lightStateSent = false;
+            setBrightness = requestedLevel;
+            Serial.print( F("Changing brightness to ") );
+            Serial.print( setBrightness );
+
+            if (setBrightness == 0)
+            {
+              setBrightness = 1;
+            }
+            setOn = (bool)requestedLevel;
+            lightsInitializedBrightness = true;
+            lightsStateSent = false;
         }
     }
     else if (message.type == V_RGB)
@@ -318,9 +331,10 @@ void receive(const MyMessage& message)
           color = color / 256;
         }
         recolor(lightsBrightness);
-        Serial.print("Changing color to ");
+        Serial.print(F("Changing color to "));
         Serial.println(setColor);
-        lightStateSent = false;
+        lightsInitializedColor = true;
+        lightsStateSent = false;
     }
 }
 

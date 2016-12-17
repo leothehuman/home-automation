@@ -369,7 +369,7 @@ void receive(const MyMessage& message)
           color = color / 256;
         }
         recolor(lightsBrightness);
-        Serial.print("Changing color to ");
+        Serial.print(F("Changing color to "));
         Serial.println(setColor);
         lightsInitializedColor = true;
         lightsStateSent = false;
