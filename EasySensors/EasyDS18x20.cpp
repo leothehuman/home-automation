@@ -5,7 +5,7 @@ namespace {
 }
 
 EasyDS18x20::EasyDS18x20(uint8_t sensorId, int sensorPin)
-  : msgTemp(sensorId, V_HUM)
+  : msgTemp(sensorId, V_TEMP)
   , ds(sensorPin)
   , type(0)
   , temp(0.0)
@@ -41,7 +41,7 @@ void EasyDS18x20::process(unsigned long now)
     data[i] = ds.read();
   }
 
-#ifdef EASY_DEBUG
+#ifdef EASY_DEBUG_RAWDATA
   Serial.print("  Data = ");
   Serial.print(present, HEX);
   Serial.print(" ");
@@ -173,6 +173,7 @@ void EasyDS18x20::init(unsigned long now)
   ds.reset();
   ds.select(addr);
   ds.write(0x44, 1);        // start conversion, with parasite power on at the end
+  Serial.println("Requested conversion");
   nextCheck = now + pollInterval;
 }
 
