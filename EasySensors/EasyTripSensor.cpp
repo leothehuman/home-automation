@@ -49,5 +49,8 @@ bool EasyTripSensor::getTripped() { return tripped; }
 EasyMotionSensor::EasyMotionSensor(uint8_t sensorId, int sensorPin)
   : EasyTripSensor(sensorId, sensorPin, S_MOTION, HIGH, false, 0, "Motion: ") {}
 
+EasyDoorSensor::EasyDoorSensor(uint8_t sensorId, int sensorPin)
+  : EasyTripSensor(sensorId, sensorPin, S_DOOR, HIGH, true, 0, "Door: ") {}
+
 EasySoundSensor::EasySoundSensor(uint8_t sensorId, int sensorPin, unsigned long debounce)
   : EasyTripSensor(sensorId, sensorPin, S_SOUND, LOW, false, debounce, "Sound: ") {}

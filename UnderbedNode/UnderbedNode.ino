@@ -9,14 +9,13 @@
 #include <EasyLightSensor.h>
 #include <EasyTripSensor.h>
 
-//#include <EasySensors.h>
-
 #define CHILD_ID_MOTION 1
 #define CHILD_ID_LIGHT_LEVEL 2
 #define CHILD_ID_TEMP 3
 #define CHILD_ID_HUM 4
 #define CHILD_ID_SOUND 5
 #define CHILD_ID_LIGHT 6
+//#define CHILD_ID_DOOR 7
 
 int DHT11pin = 2;
 int DHT11int = 0; //interrupt number (must be the one that use the previus defined pin (see table above)
@@ -34,7 +33,6 @@ EasyRGBLed easyRGBLed(CHILD_ID_LIGHT, 5, 9, 6); // Must be a PWM pin -- 3, 5, 6,
 
 void presentation()  
 {
-  // Send the sketch version information to the gateway and Controller
   sendSketchInfo("BedSensors", "1.0");
   EasySensor::presentAll();
 }

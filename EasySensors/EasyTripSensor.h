@@ -28,6 +28,12 @@ public:
   EasyMotionSensor(uint8_t sensorId, int sensorPin);
 };
 
+class EasyDoorSensor : public EasyTripSensor
+{
+public:
+  EasyDoorSensor(uint8_t sensorId, int sensorPin);
+};
+
 class EasySoundSensor : public EasyTripSensor
 {
 public:
