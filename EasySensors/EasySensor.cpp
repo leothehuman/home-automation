@@ -1,7 +1,6 @@
 #include "EasySensor.h"
 
-EasySensor::EasySensor(const char* sensorName)
-  : name(sensorName)
+EasySensor::EasySensor()
 {
   if (numSensors == MAX_SENSORS)
   {
@@ -10,8 +9,6 @@ EasySensor::EasySensor(const char* sensorName)
   }
   sensors[numSensors++] = this;
 };
-
-const char* EasySensor::getName() { return name; }
 
 void EasySensor::presentAll()
 {
@@ -23,14 +20,15 @@ void EasySensor::presentAll()
 
 namespace
 {
-  void time(const char* what, unsigned long& now)
+  void time(int i, unsigned long& now)
   {
 #ifdef EASY_DEBUG    
     unsigned long time = millis();
     unsigned long diff = time - now;
     if (time - now > 20)
     {
-      Serial.print(what);
+      Serial.print("Sensor ");
+      Serial.print(i);
       Serial.print(" took ");
       Serial.print(time - now, DEC);
       Serial.println(" ms.");
@@ -46,7 +44,7 @@ void EasySensor::processAll()
   for (int i = 0; i < numSensors; ++i)
   {
     sensors[i]->process(now);
-    time(sensors[i]->getName(), now);
+    time(i, now);
   }
 }
 

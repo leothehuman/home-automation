@@ -1,8 +1,7 @@
 #include "EasyRGBLed.h"
 
-EasyRGBLed::EasyRGBLed(const char* name, uint8_t sensorId, int rPin, int gPin, int bPin)
-  : EasySensor(name)
-  , msgLight(sensorId, V_LIGHT)
+EasyRGBLed::EasyRGBLed(uint8_t sensorId, int rPin, int gPin, int bPin)
+  : msgLight(sensorId, V_LIGHT)
   , msgDimmer(sensorId, V_DIMMER)
   , msgRgb(sensorId, V_RGB)
   , controlPin{rPin, gPin, bPin}
@@ -122,7 +121,7 @@ void EasyRGBLed::receive(const MyMessage& message)
       setBrightness = requestedLevel;
 #ifdef EASY_DEBUG
       Serial.print( F("Changing brightness to ") );
-      Serial.print( setBrightness );
+      Serial.println( setBrightness );
 #endif
       if (setBrightness == 0)
       {

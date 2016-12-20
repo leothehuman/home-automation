@@ -5,9 +5,8 @@ namespace
   unsigned long lightDelay = 1000;
 }
 
-EasyLightSensor::EasyLightSensor(const char* name, uint8_t sensorId, int pin)
-  : EasySensor(name)
-  , msgLightLevel(sensorId, V_LIGHT_LEVEL)
+EasyLightSensor::EasyLightSensor(uint8_t sensorId, int pin)
+  : msgLightLevel(sensorId, V_LIGHT_LEVEL)
   , sensorPin(pin)
   , level(0)
   , nextCheck(0)

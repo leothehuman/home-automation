@@ -11,8 +11,7 @@
 class EasySensor
 {
 public:
-  EasySensor(const char* sensorName);
-  const char* getName();
+  EasySensor();
 
   virtual void present() = 0;
   virtual void process(unsigned long now) = 0;
@@ -23,8 +22,6 @@ public:
   static void processAll();
   static void receiveAll(const MyMessage& message);
 private:
-  const char* name;
-
   static EasySensor* sensors[MAX_SENSORS];
   static int numSensors;
 };

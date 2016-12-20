@@ -10,7 +10,7 @@ void dht11_wrapper();
 class EasyDHT11 : public EasySensor
 {
 public:
-  EasyDHT11(const char* name, uint8_t tempId, uint8_t humId, int pin, int interrupt);
+  EasyDHT11(uint8_t tempId, uint8_t humId, int pin, int interrupt);
   virtual void present();
   virtual void process(unsigned long now);
   bool isOk();

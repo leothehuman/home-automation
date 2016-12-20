@@ -1,16 +1,16 @@
 #include "EasyTripSensor.h"
 
-EasyTripSensor::EasyTripSensor(const char* name, uint8_t sensorId, int pin, uint8_t sensorType, int trippedValue, bool pullUp, unsigned long debounce, const char* debugMsg)
-  : EasySensor(name)
-  , msgTripped(sensorId, V_TRIPPED)
-  , sensorPin(pin)
+EasyTripSensor::EasyTripSensor(uint8_t sensorId, int sensorPin, uint8_t sensorType, int trippedValue, bool pullUp, unsigned long debounce, const char* debugMsg)
+  : msgTripped(sensorId, V_TRIPPED)
+  , pin(sensorPin)
   , type(sensorType)
   , trippedState(trippedValue)
   , debounceDelay(debounce)
   , debugMessage(debugMsg)
+  , tripped(0)
   , nextDebounce(0)
 {
-  pinMode(sensorPin, pullUp ? INPUT_PULLUP : INPUT);
+  pinMode(pin, pullUp ? INPUT_PULLUP : INPUT);
 }
 
 void EasyTripSensor::present()
@@ -20,7 +20,7 @@ void EasyTripSensor::present()
 
 void EasyTripSensor::process(unsigned long now)
 {
-  bool newTripped = (digitalRead(sensorPin) == trippedState);
+  bool newTripped = (digitalRead(pin) == trippedState);
 
   if (newTripped && tripped)
   {
@@ -46,8 +46,8 @@ void EasyTripSensor::process(unsigned long now)
 
 bool EasyTripSensor::getTripped() { return tripped; }
 
-EasySoundSensor::EasySoundSensor(const char* name, uint8_t sensorId, int pin, unsigned long debounce)
-  : EasyTripSensor(name, sensorId, pin, S_SOUND, LOW, false, debounce, "Sound: ") {}
+EasyMotionSensor::EasyMotionSensor(uint8_t sensorId, int sensorPin)
+  : EasyTripSensor(sensorId, sensorPin, S_MOTION, HIGH, false, 0, "Motion: ") {}
 
-EasyMotionSensor::EasyMotionSensor(const char* name, uint8_t sensorId, int pin)
-  : EasyTripSensor(name, sensorId, pin, S_MOTION, HIGH, false, 0, "Motion: ") {}
+EasySoundSensor::EasySoundSensor(uint8_t sensorId, int sensorPin, unsigned long debounce)
+  : EasyTripSensor(sensorId, sensorPin, S_SOUND, LOW, false, debounce, "Sound: ") {}

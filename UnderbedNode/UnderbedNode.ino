@@ -1,5 +1,5 @@
 // Enable debug prints
-#define MY_DEBUG
+//#define MY_DEBUG
 
 #include <MyConfig.h>
 #include <MySensors.h>
@@ -26,11 +26,11 @@ int soundPin = A1;
 
 const unsigned long SoundDelay = 1000;
 
-EasyDHT11 easyDHT11("DHT11", CHILD_ID_TEMP, CHILD_ID_HUM, DHT11pin, DHT11int);
-EasyLightSensor easyLightSensor("Light", CHILD_ID_LIGHT_LEVEL, lightPin);
-EasyMotionSensor easyMotion("Motion", CHILD_ID_MOTION, pirPin);
-EasySoundSensor easySound("Sound", CHILD_ID_SOUND, soundPin, SoundDelay);
-EasyRGBLed easyRGBLed("Led", CHILD_ID_LIGHT, 5, 9, 6); // Must be a PWM pin -- 3, 5, 6, 9, 10, 11
+EasyDHT11 easyDHT11(CHILD_ID_TEMP, CHILD_ID_HUM, DHT11pin, DHT11int);
+EasyLightSensor easyLightSensor(CHILD_ID_LIGHT_LEVEL, lightPin);
+EasyMotionSensor easyMotion(CHILD_ID_MOTION, pirPin);
+//EasySoundSensor easySound(CHILD_ID_SOUND, soundPin, SoundDelay);
+EasyRGBLed easyRGBLed(CHILD_ID_LIGHT, 5, 9, 6); // Must be a PWM pin -- 3, 5, 6, 9, 10, 11
 
 void presentation()  
 {
@@ -41,6 +41,7 @@ void presentation()
 
 void setup()
 {
+  pinMode(soundPin, INPUT);
 }
 
 void loop()

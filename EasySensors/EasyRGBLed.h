@@ -6,7 +6,7 @@
 class EasyRGBLed : public EasySensor
 {
 public:
-  EasyRGBLed(const char* name, uint8_t sensorId, int rPin, int gPin, int bPin);
+  EasyRGBLed(uint8_t sensorId, int rPin, int gPin, int bPin);
   virtual void present();
   virtual void process(unsigned long now);
   virtual void receive(const MyMessage& message);
