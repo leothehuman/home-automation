@@ -10,8 +10,9 @@ void dht11_wrapper();
 class EasyDHT11 : public EasySensor
 {
 public:
-  EasyDHT11(uint8_t tempId, uint8_t humId, int pin, int interrupt);
-  void process(unsigned long now);
+  EasyDHT11(const char* name, uint8_t tempId, uint8_t humId, int pin, int interrupt);
+  virtual void present();
+  virtual void process(unsigned long now);
   bool isOk();
   float getTemp();
   float getHum();
@@ -19,7 +20,7 @@ public:
   static idDHT11& getInstance();
 private:
     
-  MyMessage msgTemp; 
+  MyMessage msgTemp;
   MyMessage msgHum;
   float temp;
   float hum;

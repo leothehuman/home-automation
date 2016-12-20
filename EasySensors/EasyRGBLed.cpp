@@ -1,10 +1,10 @@
 #include "EasyRGBLed.h"
 
-EasyRGBLed::EasyRGBLed(uint8_t sensorId, int rPin, int gPin, int bPin)
-  : sensor(sensorId)
-  , msgLight(sensor, V_LIGHT)
-  , msgDimmer(sensor, V_DIMMER)
-  , msgRgb(sensor, V_RGB)
+EasyRGBLed::EasyRGBLed(const char* name, uint8_t sensorId, int rPin, int gPin, int bPin)
+  : EasySensor(name)
+  , msgLight(sensorId, V_LIGHT)
+  , msgDimmer(sensorId, V_DIMMER)
+  , msgRgb(sensorId, V_RGB)
   , controlPin{rPin, gPin, bPin}
 
   , setOn(false)
@@ -21,11 +21,15 @@ EasyRGBLed::EasyRGBLed(uint8_t sensorId, int rPin, int gPin, int bPin)
   , initializedColor(false)
   , stateSent(true)
 {
-  reg(sensor, S_RGB_LIGHT);
   for (int j = 0; j < 3; ++j)
   {
     pinMode(controlPin[j], OUTPUT);
   }
+}
+
+void EasyRGBLed::present()
+{
+  ::present(msgLight.sensor, S_RGB_LIGHT);
 }
 
 void EasyRGBLed::recolor(int brightness)
@@ -41,9 +45,9 @@ void EasyRGBLed::process(unsigned long now)
 {
   if (nextUpdate == 0)
   {
-    request(sensor, V_RGB);
-    request(sensor, V_DIMMER);
-    request(sensor, V_LIGHT);
+    request(msgRgb.sensor, V_RGB);
+    request(msgDimmer.sensor, V_DIMMER);
+    request(msgLight.sensor, V_LIGHT);
   }
   if (!(initializedState && initializedBrightness && initializedColor) && (now > 10000))
   {
@@ -89,7 +93,7 @@ void EasyRGBLed::process(unsigned long now)
 
 void EasyRGBLed::receive(const MyMessage& message)
 {
-  if (message.sensor != sensor)
+  if (msgLight.sensor != message.sensor)
   {
     return;
   }

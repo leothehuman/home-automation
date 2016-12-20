@@ -3,14 +3,14 @@
 
 #include "EasySensor.h"
 
-class EasyRGBLed : EasySensor
+class EasyRGBLed : public EasySensor
 {
 public:
-  EasyRGBLed(uint8_t sensorId, int rPin, int gPin, int bPin);
-  void process(unsigned long now);
-  void receive(const MyMessage& message);
+  EasyRGBLed(const char* name, uint8_t sensorId, int rPin, int gPin, int bPin);
+  virtual void present();
+  virtual void process(unsigned long now);
+  virtual void receive(const MyMessage& message);
 private:
-  uint8_t sensor;
   MyMessage msgLight;
   MyMessage msgDimmer;
   MyMessage msgRgb;

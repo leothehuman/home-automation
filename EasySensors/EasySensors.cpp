@@ -3,5 +3,5 @@
 
 void presentation()
 {
-  EasySensor::present();
+  EasySensor::presentAll();
 }

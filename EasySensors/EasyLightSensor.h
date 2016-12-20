@@ -6,8 +6,9 @@
 class EasyLightSensor : public EasySensor
 {
 public:
-  EasyLightSensor(uint8_t sensorId, int pin);
-  void process(unsigned long now);
+  EasyLightSensor(const char* name, uint8_t sensorId, int pin);
+  virtual void present();
+  virtual void process(unsigned long now);
   uint8_t getLevel();
 private:
   MyMessage msgLightLevel; 

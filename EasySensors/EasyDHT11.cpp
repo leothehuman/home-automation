@@ -12,8 +12,9 @@ void dht11_wrapper()
   EasyDHT11::getInstance().isrCallback();
 }
 
-EasyDHT11::EasyDHT11(uint8_t tempId, uint8_t humId, int pin, int interrupt)
-  : msgTemp(tempId, V_HUM)
+EasyDHT11::EasyDHT11(const char* name, uint8_t tempId, uint8_t humId, int pin, int interrupt)
+  : EasySensor(name)
+  , msgTemp(tempId, V_HUM)
   , msgHum(humId, V_TEMP)
   , temp(0.0)
   , hum(0.0)
@@ -21,9 +22,13 @@ EasyDHT11::EasyDHT11(uint8_t tempId, uint8_t humId, int pin, int interrupt)
   , state(DHT_ERR)
   , nextCheck(0)
 {
-  reg(tempId, S_TEMP);
-  reg(humId, S_HUM);
   instance = &dht11;
+}
+
+void EasyDHT11::present()
+{
+  ::present(msgTemp.sensor, S_TEMP);
+  ::present(msgHum.sensor, S_HUM);
 }
 
 void EasyDHT11::process(unsigned long now)

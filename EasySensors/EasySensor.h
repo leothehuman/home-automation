@@ -3,31 +3,29 @@
 
 #define MAX_SENSORS 10
 
+#define EASY_DEBUG
+
 #include <stdint.h>
 #include <core/MySensorsCore.h> // All sensors use this
 
 class EasySensor
 {
 public:
-  EasySensor()
-  {
-    
-  };
+  EasySensor(const char* sensorName);
+  const char* getName();
+
   virtual void present() = 0;
-  virtual void process() = 0;
+  virtual void process(unsigned long now) = 0;
   virtual void receive(const MyMessage& message) {};
   virtual ~EasySensor() {};
   
   static void presentAll();
-protected:
-  void reg(uint8_t childId, uint8_t type);
+  static void processAll();
+  static void receiveAll(const MyMessage& message);
 private:
-  struct PresentationInfo
-  {
-    uint8_t childId;
-    uint8_t type;
-  };
-  static PresentationInfo sensors[MAX_SENSORS];
+  const char* name;
+
+  static EasySensor* sensors[MAX_SENSORS];
   static int numSensors;
 };
 

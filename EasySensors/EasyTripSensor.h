@@ -3,15 +3,17 @@
 
 #include "EasySensor.h"
 
-class EasyTripSensor : EasySensor
+class EasyTripSensor : public EasySensor
 {
 public:
-  EasyTripSensor(uint8_t sensorId, int pin, uint8_t type, int trippedValue, bool pullUp, unsigned long debounce, const char* debugMsg);
-  void process(unsigned long now);
+  EasyTripSensor(const char* name, uint8_t sensorId, int pin, uint8_t sensorType, int trippedValue, bool pullUp, unsigned long debounce, const char* debugMsg);
+  virtual void present();
+  virtual void process(unsigned long now);
   bool getTripped();
 private:
   MyMessage msgTripped;
   int sensorPin;
+  uint8_t type;
   int trippedState;
   unsigned long debounceDelay;
   const char* debugMessage;
@@ -23,13 +25,13 @@ private:
 class EasySoundSensor : public EasyTripSensor
 {
 public:
-  EasySoundSensor(uint8_t sensorId, int pin, unsigned long debounce) : EasyTripSensor(sensorId, pin, S_SOUND, LOW, false, debounce, "Sound: ") {};
+  EasySoundSensor(const char* name, uint8_t sensorId, int pin, unsigned long debounce);
 };
 
 class EasyMotionSensor : public EasyTripSensor
 {
 public:
-  EasyMotionSensor(uint8_t sensorId, int pin) : EasyTripSensor(sensorId, pin, S_MOTION, HIGH, false, 0, "Motion: ") {};
+  EasyMotionSensor(const char* name, uint8_t sensorId, int pin);
 };
 
 #endif//EASYTRIPSENSOR_H
