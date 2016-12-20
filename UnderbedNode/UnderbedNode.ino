@@ -9,6 +9,8 @@
 #include <EasyLightSensor.h>
 #include <EasyTripSensor.h>
 
+//#include <EasySensors.h>
+
 #define CHILD_ID_MOTION 1
 #define CHILD_ID_LIGHT_LEVEL 2
 #define CHILD_ID_TEMP 3
@@ -43,7 +45,6 @@ void setup()
 
 void loop()
 {
-  unsigned long now = millis();
   EasySensor::processAll();
 }
 
@@ -51,4 +52,3 @@ void receive(const MyMessage& message)
 {
   EasySensor::receiveAll(message);
 }
-
