@@ -9,8 +9,16 @@
 class EasySensor
 {
 public:
-  EasySensor() {};
-  static void present();
+  EasySensor()
+  {
+    
+  };
+  virtual void present() = 0;
+  virtual void process() = 0;
+  virtual void receive(const MyMessage& message) {};
+  virtual ~EasySensor() {};
+  
+  static void presentAll();
 protected:
   void reg(uint8_t childId, uint8_t type);
 private:
