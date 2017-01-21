@@ -13,8 +13,8 @@ void dht11_wrapper()
 }
 
 EasyDHT11::EasyDHT11(uint8_t tempId, uint8_t humId, int pin, int interrupt)
-  : msgTemp(tempId, V_HUM)
-  , msgHum(humId, V_TEMP)
+  : msgTemp(tempId, V_TEMP)
+  , msgHum(humId, V_HUM)
   , temp(0.0)
   , hum(0.0)
   , dht11(pin, interrupt, dht11_wrapper)
